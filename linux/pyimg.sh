@@ -1,6 +1,6 @@
 #!/bin/bash
 logo()
-{
+	{
 	echo "                                              ___           ___      "
 	echo "     ___           __             ___        /  /\         /  /\     "
 	echo "    /  /\         |  |\          /__/\      /  /::|       /  /::\    "
@@ -13,21 +13,18 @@ logo()
 	echo "      \__\/     \__\/          \__\/         /__/:/       \  \::/    "
 	echo "                                             \__\/         \__\/     "
 	echo "									--By Lrst_6963"
-}
+	}
+
+dn()
+	{	
+	#clear
+	echo
+	echo -e "\e[4;31m 		刷取"$sl"完成！！	 \e[0m"
+	echo -e "\e[4;31m 		刷取"$sl"完成！！	 \e[0m"
+	}
 
 pyimg()
-{
-	wc()
-	{	
-	clear
-	echo -e "\e[4;31m 		刷取"$sl"完成！！！！！！！ \e[0m"
-	echo -e "\e[4;31m 		刷取"$sl"完成！！！！！！！ \e[0m"
-	echo -e "\e[4;31m 		刷取"$sl"完成！！！！！！！ \e[0m"
-									echo -e "\e[4;31m 		刷取"$sl"完成！！！！！！！ \e[0m"
-	echo -e "\e[4;31m 		刷取"$sl"完成！！！！！！！ \e[0m"
-	echo -e "\e[4;31m 		刷取"$sl"完成！！！！！！！ \e[0m"
-	echo -e "\e[4;31m 		刷取"$sl"完成！！！！！！！ \e[0m"
-	}
+	{
 	logo
 	echo ""
 	echo "输入图片名："
@@ -75,17 +72,19 @@ pyimg()
 	echo ""
 	echo "		图片接口："$url
 	echo ""
-	echo "输入 1 开始 "
-	echo "键入 2 重新 "
+	echo "Press 1 To  Start "
+	echo "Press 2 To  Restart "
 	echo "Press 3 To  Exit"
 	read ent
 	clear		
 	if [ "$ent" == "1" ];then
 	   		for i in $(seq 1 $sl)  
 	   		do   
-	   		wget -O $ss"_"$i.jpg $url
+				wget -q -O $ss"_"$i.jpg $url
+				echo -e "\e[4;31m 		第$i张完成！！ \e[0m"
 	   		done
-	   		wc
+	   		dn
+			exit
 		elif [ "$ent" == "2" ];then
 			pyimg
 		elif [ "$ent" == "3" ];then
@@ -97,34 +96,123 @@ pyimg()
 	fi
 	}
 	sta
-}   
+	}   
+help()
+	{
+	echo "
+	-u "URL"
+	-n file name
+	-v volume
+	-help help
+	-o 进入选项模式 推荐
+	"
+	}
 
 
-while : 
-do
-	logo
-	echo ""
-	echo -e "\e[4;31m 选择吧!!! \e[0m"
-	echo " "
-	echo "Press 1 To  Start "
-	echo "Press 2 To  Start "
-	echo "Press 3 To  Start "
-	echo "Press 4 To  Exit "
-	read ins
-	clear
-	if [ "$ins" == "1" ];then
-			pyimg
-			exit
-		elif [ "$ins" == "2" ];then
-			pyimg
-			exit
-		elif [ "$ins" = "3" ];then
-			pyimg
-			exit
-	    	elif [ "$ins" = "4" ];then
-			exit
-	    	else
+optt()
+{
+		while : 
+		do
+			logo
 			echo ""
-			echo -e "\e[4;32m 输入无效 ！！！ \e[0m"
-	fi
+			echo -e "\e[4;31m 选择吧!!! \e[0m"
+			echo " "
+			echo "Press 1 To  Start "
+			echo "Press 2 To  Start "
+			echo "Press 3 To  Start "
+			echo "Press 4 To  Exit "
+			read ins
+			clear
+			if [ "$ins" == "1" ];then
+					pyimg
+					exit
+				elif [ "$ins" == "2" ];then
+					pyimg
+					exit
+				elif [ "$ins" = "3" ];then
+					pyimg
+					exit
+					elif [ "$ins" = "4" ];then
+					exit
+					else
+					echo ""
+					echo -e "\e[4;32m 输入无效 ！！！ \e[0m"
+			fi
+		done; }
+
+Get_Dist_Name()
+{
+    if grep -Eqii "CentOS" /etc/issue || grep -Eq "CentOS" /etc/*-release; then
+        DISTRO='CentOS'
+        PM='yum'
+    elif grep -Eqi "Red Hat Enterprise Linux Server" /etc/issue || grep -Eq "Red Hat Enterprise Linux Server" /etc/*-release; then
+        DISTRO='RHEL'
+        PM='yum'
+    elif grep -Eqi "Aliyun" /etc/issue || grep -Eq "Aliyun" /etc/*-release; then
+        DISTRO='Aliyun'
+        PM='yum'
+    elif grep -Eqi "Fedora" /etc/issue || grep -Eq "Fedora" /etc/*-release; then
+        DISTRO='Fedora'
+        PM='yum'
+    elif grep -Eqi "Debian" /etc/issue || grep -Eq "Debian" /etc/*-release; then
+        DISTRO='Debian'
+        PM='apt'
+    elif grep -Eqi "Ubuntu" /etc/issue || grep -Eq "Ubuntu" /etc/*-release; then
+        DISTRO='Ubuntu'
+        PM='apt'
+    elif grep -Eqi "Raspbian" /etc/issue || grep -Eq "Raspbian" /etc/*-release; then
+        DISTRO='Raspbian'
+        PM='apt'
+    else
+        DISTRO='unknow'
+    fi
+}
+
+while getopts "u:n:v:h:o" OPT; do
+		case $OPT in
+			u) url=$OPTARG;;
+			n) name=$OPTARG;;
+			v) nu=$OPTARG;;
+			h) help && exit 1;;
+			o) optt;;
+			*) echo "未知参数 | 输入'pyimg -help'获取帮助" && exit 1;;
+		esac
 done
+clear
+echo "URL:"$url
+echo "Name:"$name
+echo "Volume:"$nu
+if [ ! $url ]; then
+		echo "
+		-u 参数不能为空
+		输入'pyimg -help'获取帮助
+		"
+		exit
+elif [ ! $name ]; then
+		echo "
+		-n 参数不能为空
+		输入'pyimg -help'获取帮助
+		"
+		exit
+elif [ ! $nu ]; then
+		echo "
+		-v 参数不能为空
+		输入'pyimg -help'获取帮助
+		"
+		exit
+fi
+logo
+Get_Dist_Name
+if [ $PM = yum ]; then
+	yum -qa | grep "wget"
+elif [ $PM = apt ]; then
+	dpkg -l | grep "wget"
+fi
+if [ $? = 1 ]; then
+	$PM install wget
+fi
+for i in $(seq 1 $nu); do   
+	timeout 60 wget -q -O $name"_"$i.jpg $url
+	echo -e "\e[4;31m 		第$i张完成！！ \e[0m"
+done
+dn
